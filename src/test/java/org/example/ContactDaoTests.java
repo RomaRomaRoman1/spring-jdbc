@@ -1,14 +1,11 @@
 package org.example;
 
-import org.example.config.ApplicationConfiguration;
 import org.example.contact.Contact;
 import org.example.contact.ContactConfiguration;
 import org.example.contact.ContactDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -97,6 +94,19 @@ public class ContactDaoTests {
 
         assertThatThrownBy(() -> contactDao.getContact(contactId))
                 .isInstanceOf(EmptyResultDataAccessException.class);
+
+    }
+    @Test
+    void addSomeContacts() {
+        contactDao.deleteContact(IVAN.getId());
+        contactDao.deleteContact(MARIA.getId());
+        List <Contact> contactsWithCsv = contactDao.addSomeContacts("contacts.csv");
+        List<Contact> allContacts = contactDao.getAllContacts();
+        assertThat(contactsWithCsv.size()).isEqualTo(allContacts.size());
+
+        for(Contact contact:allContacts) {
+            assertThat(contact.getId()).isNotNull();
+        }
 
     }
 }

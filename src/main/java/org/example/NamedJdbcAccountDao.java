@@ -22,7 +22,7 @@ public class NamedJdbcAccountDao implements AccountDao {
 
     // Добавление счета с указанным идентификатором и суммой
     @Override
-    public Account addAccount(long id, long amount) {
+    public Account addAccountWithAmount(long id, long amount) {
         namedJdbcTemplate.update( // Выполнение SQL-запроса для вставки записи в таблицу
                 "INSERT INTO ACCOUNT(ID, AMOUNT) VALUES(:id, :amount)", // SQL-запрос с параметрами
                 new MapSqlParameterSource() // Параметры запроса

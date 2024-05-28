@@ -9,4 +9,5 @@ public interface ContactDao {
     void updatePhoneNumber(long contactId, String phoneNumber);
     void updateEmail(long contactId, String email);
     void deleteContact(long contactId);
+    List<Contact> addSomeContacts(String filePath);
 }

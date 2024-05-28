@@ -12,14 +12,15 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 public class ContactConfiguration {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
+    private final ContactService contactService;
     @Autowired
-    public ContactConfiguration(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public ContactConfiguration(NamedParameterJdbcTemplate namedParameterJdbcTemplate, ContactService contactService) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.contactService = contactService;
     }
 
     @Bean
     public ContactDao contactDao() {
-        return new NamedJbdcContactDao(namedParameterJdbcTemplate);
+        return new NamedJbdcContactDao(namedParameterJdbcTemplate, contactService);
     }
 }

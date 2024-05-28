@@ -7,18 +7,22 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Repository
 @Primary
 public class NamedJbdcContactDao implements ContactDao {
-
+    private final ContactService contactService;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public NamedJbdcContactDao(NamedParameterJdbcTemplate namedJdbcTemplate) {
+    public NamedJbdcContactDao(NamedParameterJdbcTemplate namedJdbcTemplate, ContactService contactService) {
         this.namedJdbcTemplate = namedJdbcTemplate;
+        this.contactService = contactService;
     }
+
     @Override
     public List<Contact> getAllContacts() {
         return namedJdbcTemplate.query(
@@ -79,5 +83,23 @@ public class NamedJbdcContactDao implements ContactDao {
                 new MapSqlParameterSource()
                         .addValue("idContact", contactId)
         );
+    }
+
+    @Override
+    public List<Contact> addSomeContacts(String filePath) {
+        List<Contact> contacts = new ArrayList<>();
+        try{contacts = contactService.readContactsFromCsv(filePath);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Sorry, unable to read contacts from CSV file", e);
+        }
+        var args = contacts.stream()
+                .map(account->new MapSqlParameterSource()
+                        .addValue("name", account.getName())
+                        .addValue("surName", account.getSurname())
+                        .addValue("email", account.getEmail())
+                        .addValue("phone", account.getPhone())).toArray(MapSqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate("INSERT INTO contact (NAME, SURNAME, EMAIL, PHONE_NUMBER) VALUES(:name, :surName, :email, :phone)", args);
+        return contacts;
     }
 }
