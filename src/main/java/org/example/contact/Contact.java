@@ -1,14 +1,31 @@
 package org.example.contact;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Table(name="contact")
 public class Contact {
-
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE)//будет использованы последовательности для генерации id
     private Long id;
-    private final String name;
-    private final String surname;
-    private final String email;
-    private final String phone;
+@Column(name ="name")
+    private String name;
+@Column(name="surname")
+    private String surname;
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name="email")
+    private String email;
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @Column(name="phone_number")
+    private String phone;
 
     public Contact(Long id, String name, String surname, String email, String phone) {
         this.id = id;
@@ -24,6 +41,11 @@ public class Contact {
         this.email = email;
         this.phone = phone;
     }
+
+    public Contact() {
+
+    }
+
 
     public Long getId() {
         return id;
