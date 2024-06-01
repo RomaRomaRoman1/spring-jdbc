@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:jdbc.properties")
-@ComponentScan("org.example")
+@ComponentScan({"org.example.contact", "org.example.hibernate"})
 public class ApplicationConfiguration {
     @Value("${jdbc.url}")
     private String jdbcUrl;
